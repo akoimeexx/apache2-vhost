@@ -92,7 +92,7 @@ SEE ALSO
 --------
 The full documentation for apache2-vhost can be found in the source code. If apache2-vhost has been distributed as a binary only, you can find the source code online at https://github.com/akoimeexx/apache2-vhost
 
-Also included in the git repository is localhost.function.sh, the bash script function I originally started writing to manage my virtual host files. It is provided for reference only, and should not be used ina production environment as it is not thoroughly tested.
+Also included in the git repository is localhost.function.sh, the bash script function I originally started writing to manage my virtual host files. It is provided for reference only, and should not be used in a production environment as it is not thoroughly tested.
 
 DIAGNOSTICS
 -----------
