@@ -22,7 +22,11 @@ This program was written primarily for web developers that need to host several 
 OPTIONS
 -------
 *  __-a, --add__ _&lt;vhostdomain&gt;_
-Creates an apache2 vhost configuration file using the current working directory as document_root for _&lt;vhostdomain&gt;_ in __HTTPD_ROOT__/sites-available/; then symlinks the file to __HTTPD_ROOT__/sites-enabled/ and adds an entry to to /etc/hosts as if apache2-vhost --link _&lt;vhostdomain&gt;_ was called
+Creates an apache2 vhost configuration file using the current working directory as document_root for _&lt;vhostdomain&gt;_ in __HTTPD_ROOT__/sites-available/; then symlinks the file to __HTTPD_ROOT__/sites-enabled/ and adds an entry to to /etc/hosts as if 
+```bash
+apache2-vhost --link <vhostdomain>
+```
+ was called
 
 *  __-h, --help__
 Outputs this help text
@@ -30,5 +34,5 @@ Outputs this help text
 *  __-l, --list__
 Lists all files with the file extension *.vhost.conf in __HTTPD_ROOT__/sites-available/
 
-*  __-p, --purge__ _&lt;vhostdomain&t;_
+*  __-p, --purge__ _&lt;vhostdomain&gt;_
 Removes the associated _&lt;vhostdomain&gt;_ file from __HTTPD_ROOT__/sites-available/; then removes the associated link from __HTTPD_ROOT__/sites-enabled/ and entry from /etc/hosts as if apache2-vhost --remove _&lt;vhostdomain&gt;_ was called
