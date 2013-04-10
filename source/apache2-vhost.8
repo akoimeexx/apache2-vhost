@@ -1,0 +1,165 @@
+."I would like to say that creating a manpage by hand has to be by far the WORST
+."kind of text-based Hell I've delved into, and I've been eaten by a Grue!
+."  -Johnathan
+
+."Reference manpages used while building this manpage: grep.1.gz, links2.1.gz, 
+."  ls.1.gz, apt-get.8.gz, apache2.8.gz
+."Reference material used while building this manpage: man groff_man
+
+."Some portability stuff nabbed from apt-get.8, I honestly have no idea what
+."this stuff does:
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+."Disable hyphenation
+.nh
+."Disable justification
+.ad l
+
+
+.TH man 8 "09 April 2013" "0.0.2" "apache2-vhost man page"
+
+
+.SH NAME
+apache2-vhost \- Apache2 vhost configuration manager 
+
+
+.SH SYNOPSIS
+.B apache2-vhost
+-[aprs]
+.I <vhostdomain>\fR,
+.B apache2-vhost
+-[hlv]
+
+
+.SH DESCRIPTION
+.B apache2-vhost
+is a command line program to assist in adding and removing apache2 
+virtual hosts to and from the system. It completes this task by utilizing the 
+creation and removal of regular and symlinked files in the 
+\fBHTTPD_ROOT\fR/sites-available/ and \fBHTTPD_ROOT\fR/sites-enabled/ 
+directories respectively, and managing \fI<vhostdomain>\fR entries 
+in the system's hosts file. It uses the current working directory for the 
+virtual host's document_root.
+.PP
+This program was written primarily for web developers that need to host several 
+web projects on one system when developing and testing. It should allow a web 
+developer to navigate to http://\fI<vhostdomain>\fR/ without too much mucking 
+around with apache2 configs themselves.
+
+
+.SH OPTIONS
+.IP "\fB-a, --add\fR \fI<vhostdomain>\fR"
+Creates an apache2 vhost configuration file using the current working directory 
+as document_root for \fI<vhostdomain>\fR in \fBHTTPD_ROOT\fR/sites-available/; 
+then symlinks the file to \fBHTTPD_ROOT\fR/sites-enabled/ and adds an entry to 
+to /etc/hosts as if apache2-vhost --link \fI<vhostdomain>\fR was called
+
+.IP "\fB-h, --help\fR"
+Outputs this help text
+
+.IP "\fB-l, --list\fR"
+Lists all files with the file extension *.vhost.conf in 
+\fBHTTPD_ROOT\fR/sites-available/
+
+.IP "\fB-p, --purge\fR \fI<vhostdomain>\fR"
+Removes the associated \fI<vhostdomain>\fR file from 
+\fBHTTPD_ROOT\fR/sites-available/; then removes the associated link from 
+\fBHTTPD_ROOT\fR/sites-enabled/ and entry from /etc/hosts as if 
+.EX
+apache2-vhost --remove \fI<vhostdomain>\fR was called
+.EE
+.IP "\fB-r, --remove\fR \fI<vhostdomain>\fR"
+Removes the associated \fI<vhostdomain>\fR file from 
+\fBHTTPD_ROOT\fR/sites-enabled/ and entry from /etc/hosts
+
+.IP "\fB-s, --link\fR \fI<vhostdomain>\fR"
+Symlinks the associated \fI<vhostdomain>\fR file from 
+\fBHTTPD_ROOT\fR/sites-available/ to \fBHTTPD_ROOT\fR/sites-enabled/ and adds 
+an entry to /etc/hosts
+
+.IP "\fB-v, --version\fR"
+Print the version number and exit
+
+
+.SH EXAMPLES
+.EX
+\fBapache2-vhost\fR --add \fIfake.localhost\fR
+.EE
+adds a new apache2 vhost file to \fBHTTPD_ROOT\fR/sites-available/, then 
+symlinks it to \fBHTTPD_ROOT\fR/sites-enabled/ and adds an entry to /etc/hosts
+.PP
+.EX
+\fBapache2-vhost\fR --remove \fIfake.localhost\fR
+.EE
+removes the \fIfake.localhost\fR symlink from \fBHTTPD_ROOT\fR/sites-enabled/, 
+then removes the entry from /etc/hosts. The file located at 
+\fBHTTPD_ROOT\fR/sites-available/ is left alone
+
+
+.SH ENVIRONMENT
+This section describes any environment dependencies that are required for 
+.B apache2-vhost
+to properly operate. Generally speaking, the main requirement is that apache2 is 
+installed on the system apache-vhost is executed on.
+.PP
+.B HTTPD_ROOT
+.RS
+Location of apache2's configuration files. \fBapache2-vhost\fR attempts to find 
+the location by forking and calling \fBapache2 -V\fR, then \fIstrncmp\fR'ing 
+the output for the \fBHTTPD_ROOT\fR configuration. If no \fBHTTPD_ROOT\fR 
+configuration can be found, /etc/apache2 is used as a fallback location.
+.RE
+
+
+.SH FILES
+.B HTTPD_ROOT/sites-available/
+.RS
+Directory where generated \fI<vhostdomain>\fR.vhost.conf files are stored
+
+.RE
+.B HTTPD_ROOT/sites-enabled/
+.RS
+Directory where \fI<vhostdomain>\fR.vhost.conf symlinks are stored
+
+.RE
+.B /etc/hosts
+.RS
+System file to point \fI<vhostdomain>\fR to 127.0.0.1
+.RE
+
+
+.SH "SEE ALSO"
+The full documentation for 
+.B apache2-vhost
+can be found in the source code. If 
+.B apache2-vhost
+has been distributed as a binary only, you can find the source code online at 
+.br
+.I https://github.com/akoimeexx/apache2-vhost
+
+
+.SH DIAGNOSTICS
+.B apache2-vhost 
+returns 
+.I EXIT_SUCCESS
+(0) on normal operation, or an exit code as defined in 
+.I /usr/include/sysexits.h
+on failure, along with a human-readable error description on stderr.
+.PP
+It should be noted that this program will exit out on a file operation error if 
+the user running it does not have correct permissions. This is by design; if you 
+don't have sudo access you probably shouldn't be mucking about with /etc/hosts 
+and the like.
+
+
+.SH BUGS
+No known bugs, please report any bugs found to the author.
+
+
+.SH AUTHOR
+Johnathan Graham McKnight <akoimeexx@gmail.com>
+
+
+.SH COPYRIGHT
+"This copyright tbd when I have interwebtubenetsospheres again."
+ -The Penguin (:>(  )
