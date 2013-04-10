@@ -8,7 +8,22 @@
  * and C/C++ (/usr/include/sysexits.h)
  * 
  * compile: gcc -O3 -std=c99 -Wall main.posix.c -o apache2-vhost
+ * 
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #define _POSIX_SOURCE 1
 #define _POSIX_C_SOURCE 200112L
 #define AUTHOR "Johnathan McKnight <akoimeexx@gmail.com>"
@@ -94,10 +109,6 @@ static struct option long_opts[] = {
 
 
 int main(int argc, char *argv[]) {
-	// ALPHA Disclaimer
-	printf("\n\nThis program is currently in Alpha testing phase.\nPlease report any changes, feature requests, bugs, etc to the author at akoimeexx@gmail.com\n\n");
-	
-	
 	/* Attempt to find HTTPD_ROOT from apache2 -V */
 	FILE *apache_pipe;
 	apache_pipe = popen("apache2 -V", "r");
