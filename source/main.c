@@ -7,7 +7,7 @@
  * Exit codes are used as defined by http://tldp.org/LDP/abs/html/exitcodes.html 
  * and C/C++ (/usr/include/sysexits.h)
  * 
- * compile: gcc -O3 -std=c99 -Wall main.posix.c -o apache2-vhost
+ * compile: gcc -O3 -std=c99 -Wall main.c -o apache2-vhost
  * 
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -248,13 +248,14 @@ int main(int argc, char *argv[]) {
 						if(hosts_buf[newline_pos] == '\n') {
 							hosts_buf[newline_pos] = '\0';
 						}
-						if(strncmp_r(optarg, hosts_buf, strlen(optarg)) == 0) {
+						if(strlen(hosts_buf) > 1 && strncmp_r(optarg, hosts_buf, strlen(optarg)) == 0) {
 							fprintf(stderr, "apache2-vhost: vhost `%s' already assigned in /etc/hosts\n", optarg);
 							fclose(hosts_file);
 							exit(EXIT_SUCCESS); // Exit 0
 						}
 					}
-					// TODO: We made it this far, put the entry into /etc/hosts
+					fseek(hosts_file, 0, SEEK_END);
+					fprintf(hosts_file, "\n127.0.0.1	%s\n", optarg);
 					fclose(hosts_file);
 					
 					exit(EXIT_SUCCESS); // Exit 0
