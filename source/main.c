@@ -29,6 +29,7 @@
 #define AUTHOR "Johnathan McKnight <akoimeexx@gmail.com>"
 #define VERSION "0.0.2"
 
+
 /* Standard system header includes */
 #include <stdio.h>
 #include <stdlib.h>
@@ -107,6 +108,28 @@ static struct option long_opts[] = {
 	{0, 0, 0, 0}
 };
 
+
+/**
+ * strncmp_r - Compare strings from the rightmost side to n length
+ */
+int strncmp_r(const char *s1, const char *s2, int n) {
+	// Set maxlength, then re-assign if second is smaller
+	int s_maxlen = strlen(s1);
+	if(strlen(s2) < strlen(s1)) {
+		s_maxlen = strlen(s2);
+	}
+	// If checking length is smaller than maxlength, use that.
+	if(n < s_maxlen) {
+		s_maxlen = n;
+	}
+	// Truncate strings to maxlength, from the right.
+	char sub1[s_maxlen];
+	char sub2[s_maxlen];
+	strncpy(sub1, &s1[strlen(s1) - s_maxlen], s_maxlen + 1);
+	strncpy(sub2, &s2[strlen(s2) - s_maxlen], s_maxlen + 1);
+	// Compare the strings
+	return strcmp(sub1, sub2);
+}
 
 int main(int argc, char *argv[]) {
 	/* Attempt to find HTTPD_ROOT from apache2 -V */
@@ -209,7 +232,31 @@ int main(int argc, char *argv[]) {
 						fprintf(stderr, "apache2-vhost: failed to create symbolic link `%s': %s\n", vhost_symlinkpath, strerror(errno));
 						exit(EX_SOFTWARE); // Exit 70
 					}
-					//TODO: edit /etc/hosts
+					
+					// Open up /etc/hosts for adding the entry
+					FILE *hosts_file = fopen("/etc/hosts", "r+");
+					// Handle not being able to write out to the filepath
+					if(hosts_file == NULL) {
+						fprintf(stderr, "apache2-vhost: cannot open regular file `%s' for reading and writing: %s\n", "/etc/hosts", strerror(errno));
+						exit(EX_SOFTWARE); // Exit 70
+					}
+					
+					// Check if we're already in the hosts file
+					char hosts_buf[255];
+					while(fgets(hosts_buf, sizeof hosts_buf, hosts_file) != NULL) {
+						int newline_pos = strlen(hosts_buf) - 1;
+						if(hosts_buf[newline_pos] == '\n') {
+							hosts_buf[newline_pos] = '\0';
+						}
+						if(strncmp_r(optarg, hosts_buf, strlen(optarg)) == 0) {
+							fprintf(stderr, "apache2-vhost: vhost `%s' already assigned in /etc/hosts\n", optarg);
+							fclose(hosts_file);
+							exit(EXIT_SUCCESS); // Exit 0
+						}
+					}
+					// TODO: We made it this far, put the entry into /etc/hosts
+					fclose(hosts_file);
+					
 					exit(EXIT_SUCCESS); // Exit 0
 				} else {
 					fprintf(stderr, usage);
