@@ -35,6 +35,8 @@
 #include <stdlib.h>
 /* Unix-like/POSIX-compliant functions, getcwd, symlink, among others. */
 #include <unistd.h>
+/* Directory access */
+#include <dirent.h>
 /* Error reporting */ //INFO: <asm-generic/errno.h>: good human-readable strings
 #include <errno.h>
 /* String manipulation: strncmp, strncpy */
@@ -271,8 +273,20 @@ int main(int argc, char *argv[]) {
 				exit(EXIT_SUCCESS); // Exit 0
 				break;
 			case 'l':
-				//TODO: Display a list of *.vhost.conf files from httpd_root/sites-available/
-				printf("TODO: Display a list of *.vhost.conf files from httpd_root/sites-available/");
+				if(1){
+					// Dirty hack because gcc keeps freaking out about a variable declarion after a case label.
+				}
+				char vconf_path[PATH_MAX];
+				sprintf(vconf_path, "%s/sites-available/", httpd_root);
+				
+				
+				//if(access(vconf_path, F_OK)) {
+				//	
+				//}
+				//scandir(
+				printf("TODO: Display a list of *.vhost.conf files from httpd_root/sites-available/\n");
+				printf("Directory: %s\n", vconf_path);
+				
 				exit(EXIT_SUCCESS); // Exit 0
 				break;
 			case 'p':
